@@ -75,7 +75,9 @@
 
 - (IBAction) btnReleaseClicked
 {
-    NSLog(@"Release the client.");
+    [client release];
+    client = nil;
+    
 }
 
 
@@ -86,7 +88,7 @@
 
 - (void) mjpegClient:(MJPEGClient*) client didReceiveError:(NSError*) error
 {
-    
+    NSLog(@"Error! %@", [error localizedDescription]);
 }
 
 - (void)dealloc

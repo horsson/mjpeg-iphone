@@ -212,6 +212,7 @@ const UInt8 SOI[] = {0xff,0xd8};
     NSString * strLine = [[NSString alloc] initWithData:firstLineData encoding:NSUTF8StringEncoding];
     NSArray *parts = [strLine componentsSeparatedByString:@" "];
     NSRange range = [strLine rangeOfString:@"HTTP/1." options:NSCaseInsensitiveSearch];
+    [strLine release];
     if ([parts count] != 3 || range.location == NSNotFound)
       return nil;
     return parts;
@@ -232,29 +233,7 @@ const UInt8 SOI[] = {0xff,0xd8};
      return -1;
 }
 
-/*
- DEBUG helper!
- */
--(BOOL) isValidImage:(NSData*) imageData
-{
-    const UInt8* tmpData = [imageData bytes];
-    NSUInteger length = [imageData length];
-    UInt8 b1 =tmpData[0];
-    UInt8 b2 =tmpData[1];
-    UInt8 blast =tmpData[length-1];
-    UInt8 blast2 =tmpData[length-2];
-    NSString * output= [NSString stringWithFormat:@"1st %x, 2nd %x, last %x, last2 %x",b1,b2,blast,blast2];
-    NSLog(@"%@",output);
-    
-    if (tmpData[0] == 0xff && tmpData[1] == 0xd8 && tmpData[length-1] == 0xd9 && tmpData[length-2] == 0xff)
-    {
-        return YES;
-    }
-    else
-    {
-        return NO;
-    }
-}
+
 
 #pragma mark -
 //********************************asyncsocket callback delegate********************************
@@ -275,6 +254,7 @@ const UInt8 SOI[] = {0xff,0xd8};
 
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
+    NSLog(@"Read!");
     
     if (READ_TAG_HTTP_HEADERS == tag )
     {
@@ -287,10 +267,17 @@ const UInt8 SOI[] = {0xff,0xd8};
             NSArray* statusLine = [self getStatusLine:headersData];
             if (statusLine)
             {
-                //TODO do some work.
-                for (NSString* line in statusLine)
+                int statusCode = [[statusLine objectAtIndex:1] intValue];
+                if (statusCode == 401)
                 {
-                    NSLog(@"%@",line);
+                    //Auth error.
+                    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+                    [userInfo setObject:@"Authrized error" forKey:NSLocalizedDescriptionKey];
+                    NSError *error = [[[NSError alloc] initWithDomain:NSCocoaErrorDomain code:ERROR_AUTH userInfo:userInfo] autorelease];
+                    [userInfo release];
+                    if (_delegate)
+                        [_delegate mjpegClient:self didReceiveError:error];
+                    [self stop];
                 }
             }
             
@@ -304,6 +291,7 @@ const UInt8 SOI[] = {0xff,0xd8};
         else
         {
             NSLog(@"Error! Cannot get the CRLF CRLF");
+            
             //FIXME: Read more bytes
         }
       
@@ -356,4 +344,30 @@ const UInt8 SOI[] = {0xff,0xd8};
 }
 
 //************************************************************************************************
+
+
+
+/************************************************
+ DEBUG helper!
+ ************************************************/
+-(BOOL) isValidImage:(NSData*) imageData
+{
+    const UInt8* tmpData = [imageData bytes];
+    NSUInteger length = [imageData length];
+    UInt8 b1 =tmpData[0];
+    UInt8 b2 =tmpData[1];
+    UInt8 blast =tmpData[length-1];
+    UInt8 blast2 =tmpData[length-2];
+    NSString * output= [NSString stringWithFormat:@"1st %x, 2nd %x, last %x, last2 %x",b1,b2,blast,blast2];
+    NSLog(@"%@",output);
+    
+    if (tmpData[0] == 0xff && tmpData[1] == 0xd8 && tmpData[length-1] == 0xd9 && tmpData[length-2] == 0xff)
+    {
+        return YES;
+    }
+    else
+    {
+        return NO;
+    }
+}
 @end

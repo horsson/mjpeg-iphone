@@ -12,7 +12,9 @@
 
 //#define MJPEG_DEBUG_MODE
 #define BUFFER_SIZE             512
-#define BUFFER_SIZE_FOR_HEADER  BUFFER_SIZE * 2
+#define BUFFER_SIZE_FOR_HEADER  64
+#define MAX_FRAME_SIZE          BUFFER_SIZE * 2 * 10
+
 
 #define READ_TAG_HTTP_HEADERS        0
 #define READ_TAG_SOI                 1
@@ -27,6 +29,12 @@
 #define LF 0x0a
 #define CRLF @"\r\n"
 
+typedef enum
+{
+    ERROR_AUTH,
+    ERROR_TIMEOUT
+    
+} MJPEGClientError;
 
 @class MJPEGClient;
 
