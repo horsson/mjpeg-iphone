@@ -20,5 +20,6 @@
 
 - (IBAction) sendClicked;
 - (IBAction) stopClicked;
+- (IBAction) btnReleaseClicked;
 
 @end

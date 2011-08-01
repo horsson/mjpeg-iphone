@@ -29,6 +29,7 @@ NSString * const HEADER_CONTENT_TYPE= @"Content-Type:";
 NSString * const HEADER_CONTENT_LENGTH = @"Content-Length";
 
 const UInt8 CRLF_CRLF[] = {0X0d,0x0a,0X0d,0x0a};
+const UInt8 CR_LF[] = {0X0d,0x0a};
 const UInt8 SOI[] = {0xff,0xd8};
 
 //**************************************************************************************
@@ -133,18 +134,17 @@ const UInt8 SOI[] = {0xff,0xd8};
 }
 
 /*
- Get the length of Header, in fact, it tries to get the position of 
- CRLF,CRLF
+ Find the "target" data inside the data, and return the position of "target" data.
  */
--(NSUInteger) findHeaderLength:(NSData*) data
+-(NSUInteger) findPos:(const UInt8*) target forLength:(NSUInteger) length withData:(NSData*) data
 {
     const UInt8 *buf = [data bytes];
     int index = 0;
     for (int i = 0; i < [data length]; i++) {
-        if (buf[i] == CRLF_CRLF[index])
+        if (buf[i] == target[index])
         {
             index++;
-            if (index > 4)
+            if (index > length-1)
                 return i;
         }
         else
@@ -152,37 +152,69 @@ const UInt8 SOI[] = {0xff,0xd8};
             index = 0;
         }
     }
-    
     return  -1;
 }
 
 /*
+ Get the length of all Headers, in fact, it tries to get the position of 
+ CRLF,CRLF
+ */
+-(NSUInteger) findHeaderLength:(NSData*) data
+{
+    return [self findPos:CRLF_CRLF forLength:4 withData:data];
+}
+
+/*
  Get the position of SOI
+ Hao: Refactor it later.
  */
 - (NSUInteger) findSOIPos:(NSData*) data
 {
-   
     
-    const UInt8* buf = [data bytes];
-    int index = 0;
-    for (int i=0; i < [data length];i++)
+    return  [self findPos:SOI forLength:1 withData:data];
+}
+
+/*
+ Get the HTTP Headers from the response.
+ */
+-(NSDictionary*) getHeaders:(NSData*) data
+{
+    NSString *strHeaders = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSArray* headers = [strHeaders componentsSeparatedByString:CRLF];
+    [strHeaders release];
+    
+    if ([headers count] <=0 )
+        return nil;
+    NSMutableDictionary *resultHeaders = [[[NSMutableDictionary alloc] init] autorelease];
+    for (NSString *header in headers)
     {
-        
-        if (SOI[index] != buf[i])
+        // NSLog(@"%@",header);
+        NSArray* headerComp = [header componentsSeparatedByString:@":"];
+        if ([headerComp count] == 2)
         {
-            continue;
-        }
-        else if (SOI[++index] == buf[++i])
-        {
-            return i-1;
-        }
-        else
-        {
-            index = 0;
+            [resultHeaders setObject:[headerComp objectAtIndex:1] forKey:[headerComp objectAtIndex:0]];
         }
     }
+    
+    return resultHeaders;
+}
 
-    return  -1;
+/**
+ Without the exception, the result should contain THREE elements.
+ 0. HTTPVersion
+ 1. Response code
+ 2. Response message
+ */
+-(NSArray*) getStatusLine:(NSData*) data
+{
+    NSUInteger pos = [self findPos:CR_LF forLength:2 withData:data];
+    NSData * firstLineData = [data subdataWithRange:NSMakeRange(0, pos)];
+    NSString * strLine = [[NSString alloc] initWithData:firstLineData encoding:NSUTF8StringEncoding];
+    NSArray *parts = [strLine componentsSeparatedByString:@" "];
+    NSRange range = [strLine rangeOfString:@"HTTP/1." options:NSCaseInsensitiveSearch];
+    if ([parts count] != 3 || range.location == NSNotFound)
+      return nil;
+    return parts;
 }
 
 
@@ -191,20 +223,13 @@ const UInt8 SOI[] = {0xff,0xd8};
  */
 - (UInt32) getContentLength:(NSData*) data
 {
-    NSString *strHeaders = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSArray* headers = [strHeaders componentsSeparatedByString:@"\r\n"];
-    [strHeaders release];
-    for (NSString *header in headers)
+    NSString *strContentLength = [[self getHeaders:data] objectForKey:HEADER_CONTENT_LENGTH];
+    if (strContentLength)
     {
-       // NSLog(@"%@",header);
-        NSArray* headerComp = [header componentsSeparatedByString:@":"];
-        if ([HEADER_CONTENT_LENGTH isEqualToString:[headerComp objectAtIndex:0]])
-        {
-            return [[headerComp objectAtIndex:1] intValue];
-        }
+        return [strContentLength intValue];
     }
-    
-    return -1;
+    else
+     return -1;
 }
 
 /*
@@ -230,6 +255,8 @@ const UInt8 SOI[] = {0xff,0xd8};
         return NO;
     }
 }
+
+#pragma mark -
 //********************************asyncsocket callback delegate********************************
 - (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
@@ -241,7 +268,7 @@ const UInt8 SOI[] = {0xff,0xd8};
             NSLog(@"Headers written.");
             //As all HTTP headers are written successfully, ok, read the response now.
 
-            [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_SOI];
+            [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_HTTP_HEADERS];
             break;
     }
 }
@@ -249,35 +276,54 @@ const UInt8 SOI[] = {0xff,0xd8};
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     
-    if (READ_TAG_SOI == tag )
+    if (READ_TAG_HTTP_HEADERS == tag )
     {
         NSUInteger pos;
         pos = [self findHeaderLength:data];
         NSLog(@"The header line pos is %d",pos);
-        pos = [self findSOIPos:data];
-         NSLog(@"The SOI pos is %d",pos);
         if (pos != -1)
-        {
-               // NSLog(@"Pos is %d. Tag is %ld.",pos,tag);
-                NSRange range = NSMakeRange(pos, BUFFER_SIZE - pos);
-                NSData * headers = [data subdataWithRange:NSMakeRange(0, pos)];
-                UInt32 length = [self getContentLength:headers];
-                UInt32 lengthToRead = length - (BUFFER_SIZE - pos);
-                [imgBuffer setLength:0];
-                [imgBuffer appendData:[data subdataWithRange:range]]; 
-                [sock readDataToLength:lengthToRead withTimeout:_timeout tag:READ_TAG_IMAGE];
+        {            
+            NSData *headersData = [data subdataWithRange:NSMakeRange(0, pos)];
+            NSArray* statusLine = [self getStatusLine:headersData];
+            if (statusLine)
+            {
+                //TODO do some work.
+                for (NSString* line in statusLine)
+                {
+                    NSLog(@"%@",line);
+                }
+            }
+            
+            NSRange range = NSMakeRange(pos, BUFFER_SIZE - pos);
+            [imgBuffer setLength:0];
+            [imgBuffer appendData:[data subdataWithRange:range]];
+            //Let's read the position of SOI
+            [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_SOI];
                 
         }
         else
         {
-            [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_SOI];
+            NSLog(@"Error! Cannot get the CRLF CRLF");
+            //FIXME: Read more bytes
         }
       
+    }
+    else if (READ_TAG_SOI == tag)
+    {
+        [imgBuffer appendData:data];
+        NSUInteger posOfSOI = [self findSOIPos:imgBuffer];
+        NSData *soiHeaderData = [imgBuffer subdataWithRange:NSMakeRange(0, posOfSOI)];
+        NSUInteger lengthOfImage = [self getContentLength:soiHeaderData];
+        NSUInteger lengthToread = lengthOfImage - ([imgBuffer length] - posOfSOI);
+        NSData *tmpData = [imgBuffer subdataWithRange:NSMakeRange(posOfSOI, ([imgBuffer length] - posOfSOI))];
+        [imgBuffer setLength:0];
+        [imgBuffer appendData:tmpData];
+        
+        [sock readDataToLength:lengthToread withTimeout:_timeout tag:READ_TAG_IMAGE];
     }
     
     else if (READ_TAG_IMAGE == tag)
     {
-
         [imgBuffer appendData:data];
         //NSUInteger lengthOfData = [imgBuffer length];
         //NSLog(@"The image data length is %lu.",lengthOfData);
@@ -286,10 +332,9 @@ const UInt8 SOI[] = {0xff,0xd8};
         {
             NSData *imgDataToGen = [NSData dataWithData:imgBuffer];
             UIImage *img = [[[UIImage alloc] initWithData:imgDataToGen] autorelease];
-            
             [_delegate mjpegClient:self didReceiveImage:img];
         } 
-              
+        [imgBuffer setLength:0];      
         //Read the next picture.
         [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_SOI];
     }

@@ -12,11 +12,11 @@
 
 //#define MJPEG_DEBUG_MODE
 #define BUFFER_SIZE             512
+#define BUFFER_SIZE_FOR_HEADER  BUFFER_SIZE * 2
 
-#define READ_TAG_HEADERS        -1
-#define READ_TAG_SOI            0
-#define READ_TAG_EOI            1
-#define READ_TAG_IMAGE          2
+#define READ_TAG_HTTP_HEADERS        0
+#define READ_TAG_SOI                 1
+#define READ_TAG_IMAGE               2
 
 
 #define WRITE_TAG_GET           0
@@ -25,7 +25,7 @@
 
 #define CR 0x0d
 #define LF 0x0a
-
+#define CRLF @"\r\n"
 
 
 @class MJPEGClient;
@@ -52,12 +52,12 @@
     id<MJPEGClientDelegate> _delegate;
     NSTimeInterval _timeout;
     AsyncSocket *socket;
-    //-----HTTP URL related data----
+    //**************HTTP URL related data******************
     
     NSString *_host;
     UInt16 _port;
     NSString *_path;
-    //------------------------------
+    //******************************************************
 }
 @property (retain) NSString* clientId;
 @property (retain) NSString *userName;

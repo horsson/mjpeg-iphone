@@ -73,6 +73,12 @@
     [client stop];
 }
 
+- (IBAction) btnReleaseClicked
+{
+    NSLog(@"Release the client.");
+}
+
+
 - (void) mjpegClient:(MJPEGClient*) client didReceiveImage:(UIImage*) image
 {
     [imgView setImage:image];
