@@ -11,11 +11,17 @@
 #import "Base64.h"
 
 //#define MJPEG_DEBUG_MODE
-#define BUFFER_SIZE 512
+#define BUFFER_SIZE             512
 
-#define READ_TAG_SOI 0
-#define READ_TAG_EOI 1
-#define READ_TAG_IMAGE   2
+#define READ_TAG_HEADERS        -1
+#define READ_TAG_SOI            0
+#define READ_TAG_EOI            1
+#define READ_TAG_IMAGE          2
+
+
+#define WRITE_TAG_GET           0
+#define WRITE_TAG_HEADERS       1
+
 
 #define CR 0x0d
 #define LF 0x0a
@@ -65,5 +71,4 @@
 - (id) initWithURL:(NSString*) url delegate:(id<MJPEGClientDelegate>) delegate timeout:(NSTimeInterval) timeout;
 
 
-//-(void) doGet;
 @end

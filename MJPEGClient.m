@@ -17,6 +17,7 @@
 @synthesize path = _path;
 @synthesize port = _port;
 
+
 //**************************MJPEG Client constants list********************************
 NSString* const HTTP_GET_PATTERN = @"GET %@ HTTP/1.1\r\n";
 NSString * const HEADER_USER_AGENT = @"User-Agent: mediola MJPEG Client 1.0\r\n";
@@ -31,12 +32,11 @@ const UInt8 CRLF_CRLF[] = {0X0d,0x0a,0X0d,0x0a};
 const UInt8 SOI[] = {0xff,0xd8};
 
 //**************************************************************************************
-
 -(void) doGet
 {
     //1. Write the first GET Line
     NSString *getLine = [[NSString alloc] initWithFormat:HTTP_GET_PATTERN, _path];
-    [socket writeData:[getLine dataUsingEncoding:NSUTF8StringEncoding] withTimeout:_timeout tag:0];
+    [socket writeData:[getLine dataUsingEncoding:NSUTF8StringEncoding] withTimeout:_timeout tag:WRITE_TAG_GET];
     [getLine release];
     //2. Write Headers one by one
     NSString *hostHeader = [[NSString alloc] initWithFormat:HEADER_HOST,_host];
@@ -62,7 +62,7 @@ const UInt8 SOI[] = {0xff,0xd8};
         allHeaders = [[NSString alloc] initWithFormat:@"%@%@%@\r\n\r\n", hostHeader,HEADER_USER_AGENT,HEADER_CONNECTION];
     }
     
-    [socket writeData:[allHeaders dataUsingEncoding:NSUTF8StringEncoding] withTimeout:_timeout tag:1];
+    [socket writeData:[allHeaders dataUsingEncoding:NSUTF8StringEncoding] withTimeout:_timeout tag:WRITE_TAG_HEADERS];
     [authHeader release];
     [hostHeader release];
     [allHeaders release];
@@ -234,10 +234,10 @@ const UInt8 SOI[] = {0xff,0xd8};
 - (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
     switch (tag) {
-        case 0:
+        case WRITE_TAG_GET:
             NSLog(@"GET Line written.");
             break;
-        case 1:
+        case WRITE_TAG_HEADERS:
             NSLog(@"Headers written.");
             //As all HTTP headers are written successfully, ok, read the response now.
 
@@ -251,11 +251,13 @@ const UInt8 SOI[] = {0xff,0xd8};
     
     if (READ_TAG_SOI == tag )
     {
-        NSUInteger pos ;
-    
-            pos = [self findSOIPos:data];
-            if (pos != -1)
-            {
+        NSUInteger pos;
+        pos = [self findHeaderLength:data];
+        NSLog(@"The header line pos is %d",pos);
+        pos = [self findSOIPos:data];
+         NSLog(@"The SOI pos is %d",pos);
+        if (pos != -1)
+        {
                // NSLog(@"Pos is %d. Tag is %ld.",pos,tag);
                 NSRange range = NSMakeRange(pos, BUFFER_SIZE - pos);
                 NSData * headers = [data subdataWithRange:NSMakeRange(0, pos)];
@@ -265,11 +267,11 @@ const UInt8 SOI[] = {0xff,0xd8};
                 [imgBuffer appendData:[data subdataWithRange:range]]; 
                 [sock readDataToLength:lengthToRead withTimeout:_timeout tag:READ_TAG_IMAGE];
                 
-            }
-            else
-            {
-                [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_SOI];
-            }
+        }
+        else
+        {
+            [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_SOI];
+        }
       
     }
     
