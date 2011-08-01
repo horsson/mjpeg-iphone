@@ -1,0 +1,306 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E70A123A13E304B000C4DAEA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70A123913E304B000C4DAEA /* UIKit.framework */; };
+		E70A123C13E304B000C4DAEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70A123B13E304B000C4DAEA /* Foundation.framework */; };
+		E70A123E13E304B000C4DAEA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70A123D13E304B000C4DAEA /* CoreGraphics.framework */; };
+		E70A124413E304B000C4DAEA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E70A124213E304B000C4DAEA /* InfoPlist.strings */; };
+		E70A124713E304B000C4DAEA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E70A124613E304B000C4DAEA /* main.m */; };
+		E70A124A13E304B000C4DAEA /* MJPEGWithSocketAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E70A124913E304B000C4DAEA /* MJPEGWithSocketAppDelegate.m */; };
+		E70A124D13E304B000C4DAEA /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E70A124B13E304B000C4DAEA /* MainWindow.xib */; };
+		E70A126F13E30A0400C4DAEA /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E70A126E13E30A0400C4DAEA /* AsyncSocket.m */; };
+		E70A12DA13E5EB6B00C4DAEA /* MJPEGClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E70A12D913E5EB6B00C4DAEA /* MJPEGClient.m */; };
+		E70A12DE13E5EDC800C4DAEA /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = E70A12DD13E5EDC800C4DAEA /* Base64.m */; };
+		E70A12E013E5EF3800C4DAEA /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E70A12DF13E5EF3800C4DAEA /* CFNetwork.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E70A123513E304B000C4DAEA /* MJPEGWithSocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MJPEGWithSocket.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E70A123913E304B000C4DAEA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		E70A123B13E304B000C4DAEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		E70A123D13E304B000C4DAEA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		E70A124113E304B000C4DAEA /* MJPEGWithSocket-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MJPEGWithSocket-Info.plist"; sourceTree = "<group>"; };
+		E70A124313E304B000C4DAEA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E70A124513E304B000C4DAEA /* MJPEGWithSocket-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MJPEGWithSocket-Prefix.pch"; sourceTree = "<group>"; };
+		E70A124613E304B000C4DAEA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E70A124813E304B000C4DAEA /* MJPEGWithSocketAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MJPEGWithSocketAppDelegate.h; sourceTree = "<group>"; };
+		E70A124913E304B000C4DAEA /* MJPEGWithSocketAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MJPEGWithSocketAppDelegate.m; sourceTree = "<group>"; };
+		E70A124C13E304B000C4DAEA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		E70A126D13E30A0400C4DAEA /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncSocket.h; sourceTree = "<group>"; };
+		E70A126E13E30A0400C4DAEA /* AsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncSocket.m; sourceTree = "<group>"; };
+		E70A12D813E5EB6B00C4DAEA /* MJPEGClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJPEGClient.h; sourceTree = "<group>"; };
+		E70A12D913E5EB6B00C4DAEA /* MJPEGClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJPEGClient.m; sourceTree = "<group>"; };
+		E70A12DC13E5EDC800C4DAEA /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
+		E70A12DD13E5EDC800C4DAEA /* Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Base64.m; sourceTree = "<group>"; };
+		E70A12DF13E5EF3800C4DAEA /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E70A123213E304B000C4DAEA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E70A12E013E5EF3800C4DAEA /* CFNetwork.framework in Frameworks */,
+				E70A123A13E304B000C4DAEA /* UIKit.framework in Frameworks */,
+				E70A123C13E304B000C4DAEA /* Foundation.framework in Frameworks */,
+				E70A123E13E304B000C4DAEA /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E70A122A13E304AF00C4DAEA = {
+			isa = PBXGroup;
+			children = (
+				E70A127013E30AEB00C4DAEA /* MJPEGClient */,
+				E70A126B13E309EA00C4DAEA /* TCP */,
+				E70A123F13E304B000C4DAEA /* MJPEGWithSocket */,
+				E70A123813E304B000C4DAEA /* Frameworks */,
+				E70A123613E304B000C4DAEA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E70A123613E304B000C4DAEA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E70A123513E304B000C4DAEA /* MJPEGWithSocket.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E70A123813E304B000C4DAEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E70A12DF13E5EF3800C4DAEA /* CFNetwork.framework */,
+				E70A123913E304B000C4DAEA /* UIKit.framework */,
+				E70A123B13E304B000C4DAEA /* Foundation.framework */,
+				E70A123D13E304B000C4DAEA /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E70A123F13E304B000C4DAEA /* MJPEGWithSocket */ = {
+			isa = PBXGroup;
+			children = (
+				E70A124813E304B000C4DAEA /* MJPEGWithSocketAppDelegate.h */,
+				E70A124913E304B000C4DAEA /* MJPEGWithSocketAppDelegate.m */,
+				E70A124B13E304B000C4DAEA /* MainWindow.xib */,
+				E70A124013E304B000C4DAEA /* Supporting Files */,
+			);
+			path = MJPEGWithSocket;
+			sourceTree = "<group>";
+		};
+		E70A124013E304B000C4DAEA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E70A124113E304B000C4DAEA /* MJPEGWithSocket-Info.plist */,
+				E70A124213E304B000C4DAEA /* InfoPlist.strings */,
+				E70A124513E304B000C4DAEA /* MJPEGWithSocket-Prefix.pch */,
+				E70A124613E304B000C4DAEA /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E70A126B13E309EA00C4DAEA /* TCP */ = {
+			isa = PBXGroup;
+			children = (
+				E70A126D13E30A0400C4DAEA /* AsyncSocket.h */,
+				E70A126E13E30A0400C4DAEA /* AsyncSocket.m */,
+			);
+			name = TCP;
+			sourceTree = "<group>";
+		};
+		E70A127013E30AEB00C4DAEA /* MJPEGClient */ = {
+			isa = PBXGroup;
+			children = (
+				E70A12DC13E5EDC800C4DAEA /* Base64.h */,
+				E70A12DD13E5EDC800C4DAEA /* Base64.m */,
+				E70A12D813E5EB6B00C4DAEA /* MJPEGClient.h */,
+				E70A12D913E5EB6B00C4DAEA /* MJPEGClient.m */,
+			);
+			name = MJPEGClient;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E70A123413E304B000C4DAEA /* MJPEGWithSocket */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E70A125013E304B000C4DAEA /* Build configuration list for PBXNativeTarget "MJPEGWithSocket" */;
+			buildPhases = (
+				E70A123113E304B000C4DAEA /* Sources */,
+				E70A123213E304B000C4DAEA /* Frameworks */,
+				E70A123313E304B000C4DAEA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MJPEGWithSocket;
+			productName = MJPEGWithSocket;
+			productReference = E70A123513E304B000C4DAEA /* MJPEGWithSocket.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E70A122C13E304AF00C4DAEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = E70A122F13E304AF00C4DAEA /* Build configuration list for PBXProject "MJPEGWithSocket" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E70A122A13E304AF00C4DAEA;
+			productRefGroup = E70A123613E304B000C4DAEA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E70A123413E304B000C4DAEA /* MJPEGWithSocket */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E70A123313E304B000C4DAEA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E70A124413E304B000C4DAEA /* InfoPlist.strings in Resources */,
+				E70A124D13E304B000C4DAEA /* MainWindow.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E70A123113E304B000C4DAEA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E70A124713E304B000C4DAEA /* main.m in Sources */,
+				E70A124A13E304B000C4DAEA /* MJPEGWithSocketAppDelegate.m in Sources */,
+				E70A126F13E30A0400C4DAEA /* AsyncSocket.m in Sources */,
+				E70A12DA13E5EB6B00C4DAEA /* MJPEGClient.m in Sources */,
+				E70A12DE13E5EDC800C4DAEA /* Base64.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E70A124213E304B000C4DAEA /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E70A124313E304B000C4DAEA /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		E70A124B13E304B000C4DAEA /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E70A124C13E304B000C4DAEA /* en */,
+			);
+			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E70A124E13E304B000C4DAEA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		E70A124F13E304B000C4DAEA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		E70A125113E304B000C4DAEA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MJPEGWithSocket/MJPEGWithSocket-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = "MJPEGWithSocket/MJPEGWithSocket-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		E70A125213E304B000C4DAEA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MJPEGWithSocket/MJPEGWithSocket-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = "MJPEGWithSocket/MJPEGWithSocket-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E70A122F13E304AF00C4DAEA /* Build configuration list for PBXProject "MJPEGWithSocket" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E70A124E13E304B000C4DAEA /* Debug */,
+				E70A124F13E304B000C4DAEA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E70A125013E304B000C4DAEA /* Build configuration list for PBXNativeTarget "MJPEGWithSocket" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E70A125113E304B000C4DAEA /* Debug */,
+				E70A125213E304B000C4DAEA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E70A122C13E304AF00C4DAEA /* Project object */;
+}
