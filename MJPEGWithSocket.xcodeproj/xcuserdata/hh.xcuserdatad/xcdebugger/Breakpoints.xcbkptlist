@@ -9,11 +9,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "MJPEGClient.m"
-         timestampString = "333892191.157273"
+         timestampString = "333964450.499488"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "141"
-         endingLineNumber = "141"
+         startingLineNumber = "142"
+         endingLineNumber = "142"
          landmarkName = "-findPos:forLength:withData:"
          landmarkType = "5">
       </FileBreakpoint>

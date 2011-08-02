@@ -14,6 +14,7 @@
 #define BUFFER_SIZE             512
 #define BUFFER_SIZE_FOR_HEADER  64
 #define MAX_FRAME_SIZE          BUFFER_SIZE * 2 * 10
+#define MAX_TIMEOUT_TIMES           3
 
 
 #define READ_TAG_HTTP_HEADERS        0
@@ -32,7 +33,8 @@
 typedef enum
 {
     ERROR_AUTH,
-    ERROR_TIMEOUT
+    ERROR_TIMEOUT,
+    ERROR_UNKNOWN
     
 } MJPEGClientError;
 
@@ -51,8 +53,6 @@ typedef enum
 
 @interface MJPEGClient : NSObject {
 
-
-    NSMutableData *buffer;
     NSMutableData *imgBuffer;
     NSString * _clientId;
     NSString *_userName;
@@ -66,13 +66,18 @@ typedef enum
     UInt16 _port;
     NSString *_path;
     //******************************************************
+    
+    UInt8 timeoutCounter;
+    
+    BOOL _isStopped;
 }
-@property (retain) NSString* clientId;
-@property (retain) NSString *userName;
-@property (retain) NSString *password;
-@property (retain) NSString *host;
-@property (retain) NSString *path;
+@property (nonatomic, retain) NSString* clientId;
+@property (nonatomic,retain) NSString *userName;
+@property (nonatomic,retain) NSString *password;
+@property (nonatomic,retain) NSString *host;
+@property (nonatomic,retain) NSString *path;
 @property (assign) UInt16 port;
+@property (assign) BOOL isStopped;
 
 - (void) start;
 - (void) stop;

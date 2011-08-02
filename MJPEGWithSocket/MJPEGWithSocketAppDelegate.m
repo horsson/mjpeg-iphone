@@ -16,10 +16,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    client = [[MJPEGClient alloc] initWithURL:@"http://192.168.200.143:80/mjpg/video.mjpg" delegate:self timeout:8.0];
-    client.userName = @"admin";
-    client.password = @"1234";
-    
+       
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -75,11 +72,29 @@
 
 - (IBAction) btnReleaseClicked
 {
-    [client release];
-    client = nil;
-    
+    if (client.isStopped)
+    {
+        [client release];
+        client = nil;
+    }
+    else
+    {
+        UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"Info" message:@"Please stop first!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [view show];
+        [view release];
+        view = nil;
+    }
 }
 
+- (IBAction) btnCreateClicked
+{
+    if (client == nil)
+    {
+        client = [[MJPEGClient alloc] initWithURL:@"http://192.168.200.143:80/mjpg/video.mjpg" delegate:self timeout:8.0];
+        client.userName = @"admin";
+        client.password = @"1234";
+    }
+}
 
 - (void) mjpegClient:(MJPEGClient*) client didReceiveImage:(UIImage*) image
 {

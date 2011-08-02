@@ -16,6 +16,7 @@
 @synthesize host = _host;
 @synthesize path = _path;
 @synthesize port = _port;
+@synthesize isStopped = _isStopped;
 
 
 //**************************MJPEG Client constants list********************************
@@ -83,7 +84,7 @@ const UInt8 SOI[] = {0xff,0xd8};
         _port = [httpPort unsignedIntValue];
         [nsUrl release];
         
-        buffer = [[NSMutableData alloc] initWithLength:BUFFER_SIZE];
+
         imgBuffer = [[NSMutableData alloc] initWithLength:(BUFFER_SIZE * 10)];
     }
     return self;
@@ -127,8 +128,8 @@ const UInt8 SOI[] = {0xff,0xd8};
 
 - (void)dealloc
 {
-    
-    [buffer release];
+    [self.host release];
+    [self.path release];
     [imgBuffer release];
     [super dealloc];
 }
@@ -246,24 +247,25 @@ const UInt8 SOI[] = {0xff,0xd8};
         case WRITE_TAG_HEADERS:
             NSLog(@"Headers written.");
             //As all HTTP headers are written successfully, ok, read the response now.
-
-            [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_HTTP_HEADERS];
+            [imgBuffer setLength:0];
+            [sock readDataToLength:BUFFER_SIZE_FOR_HEADER withTimeout:_timeout tag:READ_TAG_HTTP_HEADERS];
             break;
     }
 }
 
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    NSLog(@"Read!");
+    //NSLog(@"Read!");
     
     if (READ_TAG_HTTP_HEADERS == tag )
     {
+        [imgBuffer appendData:data];
         NSUInteger pos;
-        pos = [self findHeaderLength:data];
-        NSLog(@"The header line pos is %d",pos);
+        pos = [self findHeaderLength:imgBuffer];
+        //NSLog(@"The header line pos is %d",pos);
         if (pos != -1)
         {            
-            NSData *headersData = [data subdataWithRange:NSMakeRange(0, pos)];
+            NSData *headersData = [imgBuffer subdataWithRange:NSMakeRange(0, pos)];
             NSArray* statusLine = [self getStatusLine:headersData];
             if (statusLine)
             {
@@ -272,27 +274,42 @@ const UInt8 SOI[] = {0xff,0xd8};
                 {
                     //Auth error.
                     NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
-                    [userInfo setObject:@"Authrized error" forKey:NSLocalizedDescriptionKey];
+                    [userInfo setObject:@"401 Unauthorized" forKey:NSLocalizedDescriptionKey];
+                    [userInfo setObject:@"Input correct combination of Username and password." forKey:NSLocalizedRecoverySuggestionErrorKey];
                     NSError *error = [[[NSError alloc] initWithDomain:NSCocoaErrorDomain code:ERROR_AUTH userInfo:userInfo] autorelease];
                     [userInfo release];
                     if (_delegate)
                         [_delegate mjpegClient:self didReceiveError:error];
                     [self stop];
+                    return;
                 }
             }
             
-            NSRange range = NSMakeRange(pos, BUFFER_SIZE - pos);
+            NSRange range = NSMakeRange(pos, [imgBuffer length] - pos);
+            NSData *tmpData = [imgBuffer subdataWithRange:range];
+            //Clear the imgbuffer, prepair for receiving Image data.
             [imgBuffer setLength:0];
-            [imgBuffer appendData:[data subdataWithRange:range]];
+            [imgBuffer appendData:tmpData];
             //Let's read the position of SOI
             [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_SOI];
                 
         }
         else
         {
-            NSLog(@"Error! Cannot get the CRLF CRLF");
-            
-            //FIXME: Read more bytes
+            if ([imgBuffer length] > MAX_FRAME_SIZE)
+            {
+                //OK, we cannot get the header, since we read sooooo many bytes.
+                //Error occurs.Callback the delegate.
+                NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+                [userInfo setObject:@"Unknown Error!" forKey:NSLocalizedDescriptionKey];
+                NSError *error = [[[NSError alloc] initWithDomain:NSCocoaErrorDomain code:ERROR_UNKNOWN userInfo:userInfo] autorelease];
+                [userInfo release];
+                if (_delegate)
+                    [_delegate mjpegClient:self didReceiveError:error];
+                [self stop];
+                return;
+            }
+            [sock readDataToLength:BUFFER_SIZE_FOR_HEADER withTimeout:_timeout tag:READ_TAG_HTTP_HEADERS];
         }
       
     }
@@ -329,11 +346,18 @@ const UInt8 SOI[] = {0xff,0xd8};
    
 }
 
+- (NSTimeInterval)onSocket:(AsyncSocket *)sock shouldTimeoutReadWithTag:(long)tag elapsed:(NSTimeInterval)elapsed bytesDone:(NSUInteger)length
+{
+    NSLog(@"Timeout occurs");
+    return  _timeout;
+}
+
 
 - (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port
 {
      NSLog(@"Connected to %@ on port %d", host, port);
     //After successfully connected to the host, send the GET request.
+    _isStopped = NO;
      [self doGet];
 }
 
@@ -341,6 +365,7 @@ const UInt8 SOI[] = {0xff,0xd8};
 {
     [sock release];
      socket = nil;
+    _isStopped = YES;
 }
 
 //************************************************************************************************
