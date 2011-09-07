@@ -52,7 +52,7 @@ typedef enum
 @end
 
 @interface MJPEGClient : NSObject {
-
+@private
     NSMutableData *imgBuffer;
     NSString * _clientId;
     NSString *_userName;
@@ -65,17 +65,19 @@ typedef enum
     NSString *_host;
     UInt16 _port;
     NSString *_path;
+    NSString* _query;
     //******************************************************
     
-    UInt8 timeoutCounter;
+    //UInt8 timeoutCounter;
     
     BOOL _isStopped;
 }
-@property (nonatomic, retain) NSString* clientId;
-@property (nonatomic,retain) NSString *userName;
-@property (nonatomic,retain) NSString *password;
-@property (nonatomic,retain) NSString *host;
-@property (nonatomic,retain) NSString *path;
+@property (nonatomic, copy) NSString* clientId;
+@property (nonatomic, copy) NSString *userName;
+@property (nonatomic, copy) NSString *password;
+@property (nonatomic, copy) NSString *host;
+@property (nonatomic, copy) NSString *path;
+@property (nonatomic, copy) NSString *query;
 @property (assign) UInt16 port;
 @property (assign) BOOL isStopped;
 

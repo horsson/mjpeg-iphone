@@ -17,11 +17,12 @@
 @synthesize path = _path;
 @synthesize port = _port;
 @synthesize isStopped = _isStopped;
+@synthesize query = _query;
 
 
 //**************************MJPEG Client constants list********************************
 NSString* const HTTP_GET_PATTERN = @"GET %@ HTTP/1.1\r\n";
-NSString * const HEADER_USER_AGENT = @"User-Agent: mediola MJPEG Client 1.0\r\n";
+NSString * const HEADER_USER_AGENT = @"User-Agent: iPhone MJPEG Client 1.0\r\n";
 NSString * const HEADER_CONNECTION = @"Connection: keep-alive\r\n";
 NSString * const HEADER_HOST = @"Host: %@\r\n";
 NSString * const HEADER_AUTH= @"Authorization: %@\r\n";
@@ -37,7 +38,18 @@ const UInt8 SOI[] = {0xff,0xd8};
 -(void) doGet
 {
     //1. Write the first GET Line
-    NSString *getLine = [[NSString alloc] initWithFormat:HTTP_GET_PATTERN, _path];
+    NSString* getLine = nil;
+    if (self.query)
+    {
+        NSString *strFullPath = [NSString stringWithFormat:@"%@?%@",self.path,self.query];
+        getLine = [[NSString alloc] initWithFormat:HTTP_GET_PATTERN, strFullPath];
+    }
+    else
+    {
+        getLine = [[NSString alloc] initWithFormat:HTTP_GET_PATTERN, _path];
+    }
+    
+    NSLog(@"%@",getLine);
     [socket writeData:[getLine dataUsingEncoding:NSUTF8StringEncoding] withTimeout:_timeout tag:WRITE_TAG_GET];
     [getLine release];
     //2. Write Headers one by one
@@ -79,12 +91,16 @@ const UInt8 SOI[] = {0xff,0xd8};
         NSURL *nsUrl = [[NSURL alloc] initWithString:url];
         self.host = [nsUrl host] ;
         self.path = [nsUrl path] ;
+        self.query = [nsUrl query];
         
         NSNumber * httpPort = [nsUrl port];
         _port = [httpPort unsignedIntValue];
         [nsUrl release];
         
-
+        NSLog(@"Host:%@, Path:%@, Query:%@, Port:%d",self.host,self.path,self.query,self.port);
+        if (self.port <= 0)
+            self.port = 80;
+        
         imgBuffer = [[NSMutableData alloc] initWithLength:(BUFFER_SIZE * 10)];
     }
     return self;
@@ -100,7 +116,6 @@ const UInt8 SOI[] = {0xff,0xd8};
     }
     
     socket = [[AsyncSocket alloc] initWithDelegate:self];
-    
     
     if ( ![socket connectToHost:_host onPort:_port withTimeout:_timeout error:&error])
     {
@@ -120,7 +135,7 @@ const UInt8 SOI[] = {0xff,0xd8};
     {
         if ([socket isConnected])
             [socket disconnect];
-       
+        
     }
 }
 
@@ -215,7 +230,7 @@ const UInt8 SOI[] = {0xff,0xd8};
     NSRange range = [strLine rangeOfString:@"HTTP/1." options:NSCaseInsensitiveSearch];
     [strLine release];
     if ([parts count] != 3 || range.location == NSNotFound)
-      return nil;
+        return nil;
     return parts;
 }
 
@@ -231,7 +246,7 @@ const UInt8 SOI[] = {0xff,0xd8};
         return [strContentLength intValue];
     }
     else
-     return -1;
+        return -1;
 }
 
 
@@ -292,7 +307,7 @@ const UInt8 SOI[] = {0xff,0xd8};
             [imgBuffer appendData:tmpData];
             //Let's read the position of SOI
             [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_SOI];
-                
+            
         }
         else
         {
@@ -311,7 +326,7 @@ const UInt8 SOI[] = {0xff,0xd8};
             }
             [sock readDataToLength:BUFFER_SIZE_FOR_HEADER withTimeout:_timeout tag:READ_TAG_HTTP_HEADERS];
         }
-      
+        
     }
     else if (READ_TAG_SOI == tag)
     {
@@ -343,7 +358,7 @@ const UInt8 SOI[] = {0xff,0xd8};
         //Read the next picture.
         [sock readDataToLength:BUFFER_SIZE withTimeout:_timeout tag:READ_TAG_SOI];
     }
-   
+    
 }
 
 - (NSTimeInterval)onSocket:(AsyncSocket *)sock shouldTimeoutReadWithTag:(long)tag elapsed:(NSTimeInterval)elapsed bytesDone:(NSUInteger)length
@@ -355,16 +370,16 @@ const UInt8 SOI[] = {0xff,0xd8};
 
 - (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port
 {
-     NSLog(@"Connected to %@ on port %d", host, port);
+    NSLog(@"Connected to %@ on port %d", host, port);
     //After successfully connected to the host, send the GET request.
     _isStopped = NO;
-     [self doGet];
+    [self doGet];
 }
 
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock
 {
     [sock release];
-     socket = nil;
+    socket = nil;
     _isStopped = YES;
 }
 
