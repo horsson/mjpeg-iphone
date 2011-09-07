@@ -141,6 +141,9 @@ const UInt8 SOI[] = {0xff,0xd8};
 
 - (void)dealloc
 {
+    [self.userName release];
+    [self.password release];
+    [self.query release];
     [self.host release];
     [self.path release];
     [imgBuffer release];

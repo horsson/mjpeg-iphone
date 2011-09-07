@@ -141,7 +141,7 @@
 		<string>IDEWorkspaceWindowControllerUniqueIdentifier</string>
 		<string>IDEActiveWorkspaceTabController</string>
 		<string>IDEWindowToolbarIsVisible</string>
-		<string>{{0, 4}, {1280, 774}}</string>
+		<string>{{-1415, -102}, {1280, 774}}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -2884,10 +2884,10 @@
 		<string>PrimaryDocumentVisibleCharacterRange</string>
 		<string>HideAllIssues</string>
 		<string>PrimaryDocumentSelectedCharacterRange</string>
-		<real>337097001.08738399</real>
-		<string>{6827, 1831}</string>
-		<string>{7186, 0}</string>
-		<string>-onSocket:didWriteDataWithTag:</string>
+		<real>337097898.09638202</real>
+		<string>{3923, 835}</string>
+		<string>{4140, 0}</string>
+		<string>-dealloc</string>
 		<string>Xcode.IDEKit.EditorDocument.SourceCode</string>
 		<dict>
 			<key>$class</key>
@@ -10329,7 +10329,7 @@
 				</dict>
 			</array>
 		</dict>
-		<real>162</real>
+		<real>170</real>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -10359,7 +10359,7 @@
 				</dict>
 			</array>
 		</dict>
-		<real>858</real>
+		<real>850</real>
 		<string>Xcode3TargetEditor</string>
 		<dict>
 			<key>$class</key>
@@ -10398,7 +10398,7 @@
 			</dict>
 		</dict>
 		<string>file://localhost/Users/hh/github/mjpeg-iphone/MJPEGWithSocket.xcodeproj/</string>
-		<real>337096795.090639</real>
+		<real>337097788.05993402</real>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -12414,9 +12414,9 @@
 				</dict>
 			</array>
 		</dict>
-		<real>337096937.27071601</real>
+		<real>337097409.544649</real>
 		<string>{750, 1205}</string>
-		<string>{1430, 0}</string>
+		<string>{1287, 0}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -13273,9 +13273,9 @@
 				</dict>
 			</array>
 		</dict>
-		<real>337096989.87019598</real>
-		<string>{6827, 1831}</string>
-		<string>{7186, 0}</string>
+		<real>337097786.700948</real>
+		<string>{3929, 845}</string>
+		<string>{4140, 0}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -14391,8 +14391,8 @@
 				</dict>
 			</array>
 		</dict>
-		<string>{1249, 1097}</string>
-		<real>337097001.08684403</real>
+		<string>{3954, 755}</string>
+		<real>337097898.095689</real>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -14852,23 +14852,23 @@
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>1051</integer>
+					<integer>1050</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>1053</integer>
+					<integer>1052</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>1055</integer>
+					<integer>1054</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>1057</integer>
+					<integer>1056</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>1059</integer>
+					<integer>1058</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
@@ -14908,10 +14908,9 @@
 			<key>NS.relative</key>
 			<dict>
 				<key>CF$UID</key>
-				<integer>1050</integer>
+				<integer>729</integer>
 			</dict>
 		</dict>
-		<string>file://localhost/Users/hh/github/mjpeg-iphone/MJPEGWithSocket.xcodeproj/xcuserdata/hh.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -14926,7 +14925,7 @@
 			<key>NS.relative</key>
 			<dict>
 				<key>CF$UID</key>
-				<integer>1052</integer>
+				<integer>1051</integer>
 			</dict>
 		</dict>
 		<string>file://localhost/Users/hh/github/mjpeg-iphone/MJPEGClient.h</string>
@@ -14944,7 +14943,25 @@
 			<key>NS.relative</key>
 			<dict>
 				<key>CF$UID</key>
-				<integer>1054</integer>
+				<integer>1053</integer>
+			</dict>
+		</dict>
+		<string>file://localhost/Users/hh/github/mjpeg-iphone/MJPEGWithSocket.xcodeproj/xcuserdata/hh.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist</string>
+		<dict>
+			<key>$class</key>
+			<dict>
+				<key>CF$UID</key>
+				<integer>170</integer>
+			</dict>
+			<key>NS.base</key>
+			<dict>
+				<key>CF$UID</key>
+				<integer>0</integer>
+			</dict>
+			<key>NS.relative</key>
+			<dict>
+				<key>CF$UID</key>
+				<integer>1055</integer>
 			</dict>
 		</dict>
 		<string>file://localhost/Users/hh/github/mjpeg-iphone/MJPEGWithSocket/MJPEGWithSocketAppDelegate.m</string>
@@ -14962,7 +14979,7 @@
 			<key>NS.relative</key>
 			<dict>
 				<key>CF$UID</key>
-				<integer>1056</integer>
+				<integer>1057</integer>
 			</dict>
 		</dict>
 		<string>file://localhost/Users/hh/github/mjpeg-iphone/MJPEGWithSocket/MJPEGWithSocketAppDelegate.h</string>
@@ -14980,27 +14997,10 @@
 			<key>NS.relative</key>
 			<dict>
 				<key>CF$UID</key>
-				<integer>1058</integer>
+				<integer>1059</integer>
 			</dict>
 		</dict>
 		<string>file://localhost/Users/hh/github/mjpeg-iphone/AsyncSocket.h</string>
-		<dict>
-			<key>$class</key>
-			<dict>
-				<key>CF$UID</key>
-				<integer>170</integer>
-			</dict>
-			<key>NS.base</key>
-			<dict>
-				<key>CF$UID</key>
-				<integer>0</integer>
-			</dict>
-			<key>NS.relative</key>
-			<dict>
-				<key>CF$UID</key>
-				<integer>729</integer>
-			</dict>
-		</dict>
 		<dict>
 			<key>$class</key>
 			<dict>
