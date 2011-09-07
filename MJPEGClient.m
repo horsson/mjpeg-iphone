@@ -49,7 +49,6 @@ const UInt8 SOI[] = {0xff,0xd8};
         getLine = [[NSString alloc] initWithFormat:HTTP_GET_PATTERN, _path];
     }
     
-    NSLog(@"%@",getLine);
     [socket writeData:[getLine dataUsingEncoding:NSUTF8StringEncoding] withTimeout:_timeout tag:WRITE_TAG_GET];
     [getLine release];
     //2. Write Headers one by one
@@ -97,7 +96,6 @@ const UInt8 SOI[] = {0xff,0xd8};
         _port = [httpPort unsignedIntValue];
         [nsUrl release];
         
-        NSLog(@"Host:%@, Path:%@, Query:%@, Port:%d",self.host,self.path,self.query,self.port);
         if (self.port <= 0)
             self.port = 80;
         
@@ -257,10 +255,10 @@ const UInt8 SOI[] = {0xff,0xd8};
 {
     switch (tag) {
         case WRITE_TAG_GET:
-            NSLog(@"GET Line written.");
+            //NSLog(@"GET Line written.");
             break;
         case WRITE_TAG_HEADERS:
-            NSLog(@"Headers written.");
+            //NSLog(@"Headers written.");
             //As all HTTP headers are written successfully, ok, read the response now.
             [imgBuffer setLength:0];
             [sock readDataToLength:BUFFER_SIZE_FOR_HEADER withTimeout:_timeout tag:READ_TAG_HTTP_HEADERS];

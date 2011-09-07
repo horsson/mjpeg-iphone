@@ -68,8 +68,6 @@ typedef enum
     NSString* _query;
     //******************************************************
     
-    //UInt8 timeoutCounter;
-    
     BOOL _isStopped;
 }
 @property (nonatomic, copy) NSString* clientId;
