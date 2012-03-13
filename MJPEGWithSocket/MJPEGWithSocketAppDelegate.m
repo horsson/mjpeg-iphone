@@ -90,9 +90,9 @@
 {
     if (client == nil)
     {
-        client = [[MJPEGClient alloc] initWithURL:@"http://192.168.200.226/videostream.cgi" delegate:self timeout:8.0];
-        client.userName = @"admin";
-        client.password = @"";
+        client = [[MJPEGClient alloc] initWithURL:@"http://208.42.203.54:8588/mjpg/video.mjpg" delegate:self timeout:18.0];
+        //client.userName = @"admin";
+        //client.password = @"";
     }
 }
 

@@ -11,8 +11,8 @@
 #import "Base64.h"
 
 //#define MJPEG_DEBUG_MODE
-#define BUFFER_SIZE             512
-#define BUFFER_SIZE_FOR_HEADER  64
+#define BUFFER_SIZE             1024
+#define BUFFER_SIZE_FOR_HEADER  64 * 10 * 5
 #define MAX_FRAME_SIZE          BUFFER_SIZE * 2 * 10
 #define MAX_TIMEOUT_TIMES           3
 

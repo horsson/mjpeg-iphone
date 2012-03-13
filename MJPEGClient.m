@@ -31,6 +31,8 @@ NSString * const HEADER_CONTENT_TYPE= @"Content-Type:";
 NSString * const HEADER_CONTENT_LENGTH = @"Content-Length";
 
 const UInt8 CRLF_CRLF[] = {0X0d,0x0a,0X0d,0x0a};
+const UInt8 CRLF_CRLF_CRLF[] = {0X0d,0x0a,0X0d,0x0a,0X0d,0x0a};
+
 const UInt8 CR_LF[] = {0X0d,0x0a};
 const UInt8 SOI[] = {0xff,0xd8};
 
@@ -153,7 +155,7 @@ const UInt8 SOI[] = {0xff,0xd8};
 /*
  Find the "target" data inside the data, and return the position of "target" data.
  */
--(NSUInteger) findPos:(const UInt8*) target forLength:(NSUInteger) length withData:(NSData*) data
+-(NSInteger) findPos:(const UInt8*) target forLength:(NSUInteger) length withData:(NSData*) data
 {
     const UInt8 *buf = [data bytes];
     int index = 0;
@@ -176,7 +178,7 @@ const UInt8 SOI[] = {0xff,0xd8};
  Get the length of all Headers, in fact, it tries to get the position of 
  CRLF,CRLF
  */
--(NSUInteger) findHeaderLength:(NSData*) data
+-(NSInteger) findHeaderLength:(NSData*) data
 {
     return [self findPos:CRLF_CRLF forLength:4 withData:data];
 }
@@ -185,7 +187,7 @@ const UInt8 SOI[] = {0xff,0xd8};
  Get the position of SOI
  Hao: Refactor it later.
  */
-- (NSUInteger) findSOIPos:(NSData*) data
+- (NSInteger) findSOIPos:(NSData*) data
 {
     
     return  [self findPos:SOI forLength:1 withData:data];
@@ -224,7 +226,7 @@ const UInt8 SOI[] = {0xff,0xd8};
  */
 -(NSArray*) getStatusLine:(NSData*) data
 {
-    NSUInteger pos = [self findPos:CR_LF forLength:2 withData:data];
+    NSInteger pos = [self findPos:CR_LF forLength:2 withData:data];
     NSData * firstLineData = [data subdataWithRange:NSMakeRange(0, pos)];
     NSString * strLine = [[NSString alloc] initWithData:firstLineData encoding:NSUTF8StringEncoding];
     NSArray *parts = [strLine componentsSeparatedByString:@" "];
@@ -276,7 +278,7 @@ const UInt8 SOI[] = {0xff,0xd8};
     if (READ_TAG_HTTP_HEADERS == tag )
     {
         [imgBuffer appendData:data];
-        NSUInteger pos;
+        NSInteger pos;
         pos = [self findHeaderLength:imgBuffer];
         //NSLog(@"The header line pos is %d",pos);
         if (pos != -1)
@@ -332,7 +334,7 @@ const UInt8 SOI[] = {0xff,0xd8};
     else if (READ_TAG_SOI == tag)
     {
         [imgBuffer appendData:data];
-        NSUInteger posOfSOI = [self findSOIPos:imgBuffer];
+        NSInteger posOfSOI = [self findSOIPos:imgBuffer];
         NSData *soiHeaderData = [imgBuffer subdataWithRange:NSMakeRange(0, posOfSOI)];
         NSUInteger lengthOfImage = [self getContentLength:soiHeaderData];
         NSUInteger lengthToread = lengthOfImage - ([imgBuffer length] - posOfSOI);
