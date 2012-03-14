@@ -28,8 +28,8 @@ NSString * const HEADER_CONNECTION = @"Connection: keep-alive\r\n";
 NSString * const HEADER_HOST = @"Host: %@\r\n";
 NSString * const HEADER_AUTH= @"Authorization: %@\r\n";
 
-NSString * const HEADER_CONTENT_TYPE= @"Content-Type:";
-NSString * const HEADER_CONTENT_LENGTH = @"Content-length";
+NSString * const HEADER_CONTENT_TYPE= @"content-type:";
+NSString * const HEADER_CONTENT_LENGTH = @"content-length";
 
 const UInt8 CRLF_CRLF[] = {0X0d,0x0a,0X0d,0x0a};
 const UInt8 CRLF_CRLF_CRLF[] = {0X0d,0x0a,0X0d,0x0a,0X0d,0x0a};
@@ -58,6 +58,26 @@ const UInt8 SOI[] = {0xff,0xd8};
     printf("\n");
 }
 
+-(BOOL) isValidImage:(NSData*) imageData
+{
+    const UInt8* tmpData = [imageData bytes];
+    NSUInteger length = [imageData length];
+    UInt8 b1 =tmpData[0];
+    UInt8 b2 =tmpData[1];
+    UInt8 blast =tmpData[length-1];
+    UInt8 blast2 =tmpData[length-2];
+    NSString * output= [NSString stringWithFormat:@"1st %x, 2nd %x, last %x, last2 %x",b1,b2,blast,blast2];
+    NSLog(@"%@",output);
+    
+    if (tmpData[0] == 0xff && tmpData[1] == 0xd8 && tmpData[length-1] == 0xd9 && tmpData[length-2] == 0xff)
+    {
+        return YES;
+    }
+    else
+    {
+        return NO;
+    }
+}
 
 
 
@@ -238,10 +258,8 @@ const UInt8 SOI[] = {0xff,0xd8};
         NSArray* headerComp = [header componentsSeparatedByString:@":"];
         if ([headerComp count] == 2)
         {
-            NSString* name = [[headerComp objectAtIndex:0] trim];
+            NSString* name = [[[headerComp objectAtIndex:0] trim] lowercaseString];
             NSString* value = [[headerComp objectAtIndex:1] trim];
-        
-            NSLog(@"Header: %@, Value:%@",name,value);
             [resultHeaders setObject:value forKey:name];
         }
     }
@@ -366,13 +384,7 @@ const UInt8 SOI[] = {0xff,0xd8};
     {
         [imgBuffer appendData:data];
         NSInteger posOfSOI = [self findSOIPos:imgBuffer] - 1;
-        NSLog(@"Pos is %d.", posOfSOI);
         NSData *soiHeaderData = [imgBuffer subdataWithRange:NSMakeRange(0, posOfSOI)];
-       // [self dumpData:imgBuffer];
-        //---------------------------------------------DEBUG----------------------------------------------
-        NSString* tempString = [[NSString alloc] initWithData:soiHeaderData encoding:NSASCIIStringEncoding];
-        NSLog(@"%@", tempString);
-        //-------------------------------------------------------------------------------------------------
         NSUInteger lengthOfImage = [self getContentLength:soiHeaderData];
         NSUInteger lengthToread = lengthOfImage - ([imgBuffer length] - posOfSOI);
         NSData *tmpData = [imgBuffer subdataWithRange:NSMakeRange(posOfSOI, ([imgBuffer length] - posOfSOI))];
@@ -430,26 +442,7 @@ const UInt8 SOI[] = {0xff,0xd8};
 /************************************************
  DEBUG helper!
  ************************************************/
--(BOOL) isValidImage:(NSData*) imageData
-{
-    const UInt8* tmpData = [imageData bytes];
-    NSUInteger length = [imageData length];
-    UInt8 b1 =tmpData[0];
-    UInt8 b2 =tmpData[1];
-    UInt8 blast =tmpData[length-1];
-    UInt8 blast2 =tmpData[length-2];
-    NSString * output= [NSString stringWithFormat:@"1st %x, 2nd %x, last %x, last2 %x",b1,b2,blast,blast2];
-    NSLog(@"%@",output);
-    
-    if (tmpData[0] == 0xff && tmpData[1] == 0xd8 && tmpData[length-1] == 0xd9 && tmpData[length-2] == 0xff)
-    {
-        return YES;
-    }
-    else
-    {
-        return NO;
-    }
-}
+
 
 
 
