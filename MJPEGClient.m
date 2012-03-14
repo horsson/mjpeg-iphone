@@ -7,6 +7,7 @@
 //
 
 #import "MJPEGClient.h"
+#import "NSString+Utils.h"
 
 
 @implementation MJPEGClient
@@ -28,7 +29,7 @@ NSString * const HEADER_HOST = @"Host: %@\r\n";
 NSString * const HEADER_AUTH= @"Authorization: %@\r\n";
 
 NSString * const HEADER_CONTENT_TYPE= @"Content-Type:";
-NSString * const HEADER_CONTENT_LENGTH = @"Content-Length";
+NSString * const HEADER_CONTENT_LENGTH = @"Content-length";
 
 const UInt8 CRLF_CRLF[] = {0X0d,0x0a,0X0d,0x0a};
 const UInt8 CRLF_CRLF_CRLF[] = {0X0d,0x0a,0X0d,0x0a,0X0d,0x0a};
@@ -37,6 +38,29 @@ const UInt8 CR_LF[] = {0X0d,0x0a};
 const UInt8 SOI[] = {0xff,0xd8};
 
 //**************************************************************************************
+
+#pragma mark - Debug Helper
+-(void) dumpData:(NSData*) data
+{
+    const UInt8* tmpData = data.bytes;
+    NSUInteger length = [data length];
+    int c = 0;
+    for (int i = 0; i< length; i++) {
+        printf("%02X ", tmpData[i]);
+        c++;
+        if (c > 20)
+        {
+            c = 0;
+            printf("\n");
+        }
+    }
+     
+    printf("\n");
+}
+
+
+
+
 -(void) doGet
 {
     //1. Write the first GET Line
@@ -135,7 +159,6 @@ const UInt8 SOI[] = {0xff,0xd8};
     {
         if ([socket isConnected])
             [socket disconnect];
-        
     }
 }
 
@@ -157,6 +180,9 @@ const UInt8 SOI[] = {0xff,0xd8};
  */
 -(NSInteger) findPos:(const UInt8*) target forLength:(NSUInteger) length withData:(NSData*) data
 {
+   // NSString* temp = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+   // NSLog(@"%@",temp);
+    
     const UInt8 *buf = [data bytes];
     int index = 0;
     for (int i = 0; i < [data length]; i++) {
@@ -164,7 +190,7 @@ const UInt8 SOI[] = {0xff,0xd8};
         {
             index++;
             if (index > length-1)
-                return i;
+                return (i);
         }
         else
         {
@@ -190,7 +216,7 @@ const UInt8 SOI[] = {0xff,0xd8};
 - (NSInteger) findSOIPos:(NSData*) data
 {
     
-    return  [self findPos:SOI forLength:1 withData:data];
+    return  [self findPos:SOI forLength:2 withData:data];
 }
 
 /*
@@ -199,6 +225,7 @@ const UInt8 SOI[] = {0xff,0xd8};
 -(NSDictionary*) getHeaders:(NSData*) data
 {
     NSString *strHeaders = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+   
     NSArray* headers = [strHeaders componentsSeparatedByString:CRLF];
     [strHeaders release];
     
@@ -207,11 +234,15 @@ const UInt8 SOI[] = {0xff,0xd8};
     NSMutableDictionary *resultHeaders = [[[NSMutableDictionary alloc] init] autorelease];
     for (NSString *header in headers)
     {
-        // NSLog(@"%@",header);
+        //NSLog(@"Header: %@",header);
         NSArray* headerComp = [header componentsSeparatedByString:@":"];
         if ([headerComp count] == 2)
         {
-            [resultHeaders setObject:[headerComp objectAtIndex:1] forKey:[headerComp objectAtIndex:0]];
+            NSString* name = [[headerComp objectAtIndex:0] trim];
+            NSString* value = [[headerComp objectAtIndex:1] trim];
+        
+            NSLog(@"Header: %@, Value:%@",name,value);
+            [resultHeaders setObject:value forKey:name];
         }
     }
     
@@ -241,7 +272,7 @@ const UInt8 SOI[] = {0xff,0xd8};
 /*
  Get the Content-Length header from the response.
  */
-- (UInt32) getContentLength:(NSData*) data
+- (NSUInteger) getContentLength:(NSData*) data
 {
     NSString *strContentLength = [[self getHeaders:data] objectForKey:HEADER_CONTENT_LENGTH];
     if (strContentLength)
@@ -249,7 +280,7 @@ const UInt8 SOI[] = {0xff,0xd8};
         return [strContentLength intValue];
     }
     else
-        return -1;
+        return 0;
 }
 
 
@@ -334,8 +365,14 @@ const UInt8 SOI[] = {0xff,0xd8};
     else if (READ_TAG_SOI == tag)
     {
         [imgBuffer appendData:data];
-        NSInteger posOfSOI = [self findSOIPos:imgBuffer];
+        NSInteger posOfSOI = [self findSOIPos:imgBuffer] - 1;
+        NSLog(@"Pos is %d.", posOfSOI);
         NSData *soiHeaderData = [imgBuffer subdataWithRange:NSMakeRange(0, posOfSOI)];
+       // [self dumpData:imgBuffer];
+        //---------------------------------------------DEBUG----------------------------------------------
+        NSString* tempString = [[NSString alloc] initWithData:soiHeaderData encoding:NSASCIIStringEncoding];
+        NSLog(@"%@", tempString);
+        //-------------------------------------------------------------------------------------------------
         NSUInteger lengthOfImage = [self getContentLength:soiHeaderData];
         NSUInteger lengthToread = lengthOfImage - ([imgBuffer length] - posOfSOI);
         NSData *tmpData = [imgBuffer subdataWithRange:NSMakeRange(posOfSOI, ([imgBuffer length] - posOfSOI))];
@@ -413,4 +450,7 @@ const UInt8 SOI[] = {0xff,0xd8};
         return NO;
     }
 }
+
+
+
 @end
